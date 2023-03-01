@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect,JsonResponse
+from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from django.urls import reverse
@@ -19,6 +19,12 @@ def index (request):
         'books': books,
         'wishlists': wishlists
     })
+
+def pdf_view(request):
+    with open('media/files/goblet.pdf', 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=mypdf.pdf'
+        return response
 
 def search(request):
     if request.method == 'POST':

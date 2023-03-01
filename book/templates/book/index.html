@@ -1,5 +1,5 @@
 {% extends "book/layout.html" %}
-
+{% load static %}
 {% block title %} Home {% endblock %}
 
 {% block body %}
@@ -30,7 +30,8 @@
                                     {% endif %}
                                 </a>
                                 <a href="#" class="btn btn-outline-primary btn-sm">Hire</a>
-                                <a href="#" class="btn btn-outline-info btn-sm">View</a>
+                                <a href="{% url 'pdf_view' %}"
+                                 class="btn btn-outline-info btn-sm">Read</a>
                                 {% if user.username == 'admin' %}
                                 <a href="{% url 'delete' book.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
                                 {% endif %}

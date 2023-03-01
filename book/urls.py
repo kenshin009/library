@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('',views.index,name='index'),
+    path('view-pdf', views.pdf_view,name='pdf_view'),
     path('search',views.search,name='search'),
     path('wishlist',views.wishlist,name='wishlist'),
     path('delete/<int:book_id>',views.delete,name='delete'),
