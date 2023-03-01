@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from django.urls import reverse
+from django.db.models import Q
 import json
 from .models import *
 # Create your views here.
@@ -19,6 +20,21 @@ def index (request):
         'wishlists': wishlists
     })
 
+def search(request):
+    if request.method == 'POST':
+        # Get the searched words
+        q = request.POST['search']
+        # Filter the books 
+        book_filter = Book.objects.filter(
+                        Q(name__icontains=q) | Q(author__icontains=q))
+        print(book_filter)
+        wishlists = WishList.objects.filter(username=request.user.username)
+
+    return render(request,'book/index.html',{
+        'books': book_filter,
+        'wishlists': wishlists,
+        'searched': True
+    })
 
 def delete(request,book_id):
     # Get the book and delete it
@@ -73,6 +89,7 @@ def wishlist(request):
     else:
         return JsonResponse({"Error":"POST or GET request method required"},status=404)
 
+@login_required(login_url='login')
 def add_book(request):
 
     if request.method == "POST":
