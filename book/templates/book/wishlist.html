@@ -1,0 +1,33 @@
+{% extends "book/layout.html" %}
+
+{% block title %} Wishlist {% endblock %}
+
+{% block body %}
+<h2 class="display-5 text-center">Wishlist</h2><br>
+    
+        <div class="container">
+            <div class="row">
+                {% for book in wishlists %}
+                <div class="col-12 col-lg-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ book.image.url }}" class="card-img-top mt-4" alt="{{ book.image }}" style="height: 200px; object-fit:contain;">
+                        <div class="card-body mt-4">
+                            <h5 class="card-title text-center">{{ book.name}}</h5>
+                            <p class="card-text text-muted text-center"> {{ book.author }} </p>
+
+                            <div class="buttons text-center">
+                                <a href="#" class="btn btn-outline-danger btn-sm"><i class="bi bi-heart-fill"></i></a>
+                                <a href="#" class="btn btn-outline-primary btn-sm">Hire</a>
+                                <a href="#" class="btn btn-outline-info btn-sm">View</a>
+                                
+                                <a href="#" class="btn btn-outline-danger btn-sm">Delete</a>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+{% endblock %}
