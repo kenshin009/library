@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,6 +9,7 @@ import json
 from .models import *
 # Create your views here.
 
+@login_required(login_url='login')
 def index (request):
 
     books = Book.objects.all()
@@ -16,6 +18,13 @@ def index (request):
         'books': books,
         'wishlists': wishlists
     })
+
+
+def delete(request,book_id):
+    # Get the book and delete it
+    book = Book.objects.get(id=book_id)
+    book.delete()
+    return HttpResponseRedirect(reverse('index'))
 
 @csrf_exempt
 def wishlist(request):
@@ -90,12 +99,18 @@ def login_view(request):
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-
+        # Check user is present or not
+        user_filter = User.objects.filter(username=username,password=password).first()
         # Check if authentication successful
-        if user is not None:
-            login(request, user)
+        if user_filter is not None:
+            user = User.objects.get(username=username,password=password)
+            # user = authenticate(request, username=username,password=password,email=get_user.email,phone=get_user.phone,address=get_user.address)
+            print(user)
+            login(request,user)
             return HttpResponseRedirect(reverse("index"))
+            # if user is not None:
+            #     login(request, user)
+                
         else:
             return render(request, "book/login.html", {
                 "message": "Invalid username and/or password."

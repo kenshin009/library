@@ -1,13 +1,13 @@
 from django.db import models
 from phone_field import PhoneField
 from datetime import datetime,date,timedelta
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser,AbstractBaseUser
 # Create your models here.
 
 class User(AbstractUser):
     
-    phone =  PhoneField(blank=True, help_text='Contact phone number')
-    address = models.CharField(max_length=250)
+    phone =  PhoneField(blank=True,null=True, help_text='Contact phone number')
+    address = models.CharField(max_length=250,blank=True,null=True)
 
 class Category(models.Model):
     title = models.CharField(max_length=200)

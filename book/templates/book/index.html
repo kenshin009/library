@@ -31,8 +31,9 @@
                                 </a>
                                 <a href="#" class="btn btn-outline-primary btn-sm">Hire</a>
                                 <a href="#" class="btn btn-outline-info btn-sm">View</a>
-                                
-                                <a href="#" class="btn btn-outline-danger btn-sm">Delete</a>
+                                {% if user.username == 'admin' %}
+                                <a href="{% url 'delete' book.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                                {% endif %}
                             </div>
                           
                         </div>
