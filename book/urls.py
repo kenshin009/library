@@ -5,9 +5,17 @@ urlpatterns = [
     path('',views.index,name='index'),
     path('view-pdf', views.pdf_view,name='pdf_view'),
     path('search',views.search,name='search'),
+
+    path('hirebook/<int:book_id>',views.hirebook,name='hirebook'),
+    path('hirebook-list',views.hirebook_list,name='hirebook_list'),
+    path('hirebook-detail/<int:book_id>',views.hirebook_detail,name='hirebook_detail'),
+    path('hirebook-cancel/<int:id>',views.hirebook_cancel,name='hirebook_cancel'),
+
     path('wishlist',views.wishlist,name='wishlist'),
+    path('contact',views.contact,name='contact'),
     path('delete/<int:book_id>',views.delete,name='delete'),
     path('add-book',views.add_book,name='add_book'),
+    
     path('login',views.login_view,name='login'),
     path('logout',views.logout_view,name='logout'),
     path('register',views.register,name='register'),

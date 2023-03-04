@@ -1,0 +1,33 @@
+{% extends "book/layout.html" %}
+
+{% block title %} HireBook Detail {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h3 class="display-4 mb-5 text-center">Hired Book Detail</h3>
+        <hr>
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="{{ hirebook.book_image.url }}" class="my-5" alt="{{ hirebook.book_image }}" style="width: 420px; height: 460px;">
+            </div>
+
+           <div class="col-lg-6 border-left text-left pt-5">
+            <div class="mb-5"><strong>Hire ID:</strong><span class=" lead pl-3"> {{ hirebook.id }} </span> </div>
+            
+            <div class="mb-5"><strong>Username:</strong> <span class=" lead pl-3"> {{ hirebook.username }} </span></div>
+            
+            <div class="mb-5"><strong>Book ID:</strong><span class=" lead pl-3"> {{ hirebook.book_id }} </span></div>
+             
+            <div class="mb-5"><strong>Book Name:</strong><span class=" lead pl-3"> {{ hirebook.book_name }} </span></div>
+             
+            <div class="mb-5"><strong>Hire Date:</strong><span class=" lead pl-3"> {{ hirebook.hire_date }} </span></div>
+
+            <div class="mb-5"><strong>Return Date:</strong><span class=" lead pl-3"> {{ hirebook.return_date }} </span></div>
+             
+        </div>
+        </div>
+        {% if user.username == 'admin' %}
+        <a href="{% url 'hirebook_cancel' hirebook.id %}" class="btn btn-outline-danger btn-sm">Cancel</a>
+        {% endif %} 
+    </div>
+{% endblock %}

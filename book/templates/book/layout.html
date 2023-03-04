@@ -31,7 +31,10 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Hired Books</a>
+                        <a class="nav-link" href="{% url 'hirebook_list' %}">Hired Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact Librarian</a>
                     </li>
                     {% if user.username == 'admin' %} 
                     <li class="nav-item">

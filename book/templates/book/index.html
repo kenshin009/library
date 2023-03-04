@@ -29,7 +29,19 @@
                                         <i id="heart{{book.id}}" class="bi bi-heart"></i> 
                                     {% endif %}
                                 </a>
-                                <a href="#" class="btn btn-outline-primary btn-sm">Hire</a>
+                                <a href="{% url 'hirebook' book.id %}" class="btn btn-outline-primary btn-sm">
+                                    {% if hirebooks %}
+                                    {% for hirebook in hirebooks %}
+                                        {% if book.id == hirebook.book_id %}
+                                            Cancel Hire 
+                                        {% else %}
+                                            Hire
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% else %}
+                                        Hire
+                                    {% endif %}
+                                </a>
                                 <a href="{% url 'pdf_view' %}"
                                  class="btn btn-outline-info btn-sm">Read</a>
                                 {% if user.username == 'admin' %}
@@ -38,6 +50,12 @@
                             </div>
                           
                         </div>
+                      {% if message %}
+                        <div class="text-danger">
+                            {{message}}
+                        </div>
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-sm">Contact Here</a>
+                      {% endif %}
                     </div>
                 </div>
                 <script>

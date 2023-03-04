@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
+from django.http import HttpResponseRedirect,JsonResponse,HttpResponse,Http404
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime,date,timedelta
 from django.db import IntegrityError
 from django.urls import reverse
 from django.db.models import Q
@@ -12,12 +13,18 @@ from .models import *
 
 @login_required(login_url='login')
 def index (request):
-
+    # Get all books
     books = Book.objects.all()
+    # Get all user's wishlists
     wishlists = WishList.objects.filter(username=request.user.username)
+    # GEt all user's hirebooks
+    hirebooks = HireBook.objects.filter(username=request.user.username)
+
     return render(request,'book/index.html',{
         'books': books,
-        'wishlists': wishlists
+        'wishlists': wishlists,
+        'hirebooks': hirebooks,
+        
     })
 
 def pdf_view(request):
@@ -47,6 +54,62 @@ def delete(request,book_id):
     book = Book.objects.get(id=book_id)
     book.delete()
     return HttpResponseRedirect(reverse('index'))
+
+def hirebook(request,book_id):
+    # Get the book
+    book = Book.objects.get(id=book_id)
+    # Check whether the user has already hired the book or not
+    hired = HireBook.objects.filter(username=request.user.username,book_id=book.id).first()
+    # if the user has already hired
+    if hired is not None:
+        print(hired)
+        # Show a message to contact librarian to delete hire
+        message = 'Please contact your librarian to cancel'
+         # Get all books
+        books = Book.objects.all()
+        # Get all user's wishlists
+        wishlists = WishList.objects.filter(username=request.user.username)
+        # GEt all user's hirebooks
+        hirebooks = HireBook.objects.filter(username=request.user.username)
+        # Redirect to home with context
+        return render(request,'book/index.html',{
+            'books': books,
+            'wishlists': wishlists,
+            'hirebooks': hirebooks,
+            'message': message
+        })
+    # if not hired yet
+    else:
+        print('fail')
+        # Create new hired book
+        hirebook = HireBook.objects.create(username=request.user.username,book_id=book.id,book_name=book.name,
+                                                book_image=book.image,return_date=date.today() + timedelta(days=14))
+        hirebook.save()
+        return render(request,'book/hirebook_detail.html',{'hirebook':hirebook}) 
+    
+
+def hirebook_cancel(request,id):
+    # Get the hirebook and delete it
+    hirebook = HireBook.objects.get(id=id)
+    hirebook.delete()
+    return redirect('hirebook_list')
+
+def hirebook_list(request):
+    
+    hirebooks = HireBook.objects.filter(username=request.user.username)
+    print(hirebooks)
+    return render(request,'book/hirebook_list.html',{
+        'hirebooks': hirebooks
+    })
+
+def hirebook_detail(request,book_id):
+    # Get the hired book
+    try:
+        hirebook = HireBook.objects.get(id=book_id)
+    except HireBook.DoesNotExist:
+        raise Http404
+    return render(request,'book/hirebook_detail.html',{'hirebook':hirebook})
+
 
 @csrf_exempt
 def wishlist(request):
@@ -95,6 +158,9 @@ def wishlist(request):
     else:
         return JsonResponse({"Error":"POST or GET request method required"},status=404)
 
+def contact (request):
+    return render(request,'book/contact.html')
+
 @login_required(login_url='login')
 def add_book(request):
 
@@ -128,7 +194,7 @@ def login_view(request):
         if user_filter is not None:
             user = User.objects.get(username=username,password=password)
             # user = authenticate(request, username=username,password=password,email=get_user.email,phone=get_user.phone,address=get_user.address)
-            print(user)
+      
             login(request,user)
             return HttpResponseRedirect(reverse("index"))
             # if user is not None:

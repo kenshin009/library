@@ -30,6 +30,8 @@ class HireBook(models.Model):
 
     username = models.CharField(max_length=200,default='')
     book_id = models.IntegerField(default=0)
+    book_name = models.CharField(max_length=200,default='')
+    book_image = models.ImageField(default='')
     hire_date = models.DateTimeField(auto_now_add=True)
     return_date = models.DateTimeField()
 
