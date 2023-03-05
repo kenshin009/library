@@ -11,6 +11,8 @@ urlpatterns = [
     path('hirebook-detail/<int:book_id>',views.hirebook_detail,name='hirebook_detail'),
     path('hirebook-cancel/<int:id>',views.hirebook_cancel,name='hirebook_cancel'),
 
+    path('category-books/<int:cat_id>',views.category_books,name='category_books'),
+
     path('wishlist',views.wishlist,name='wishlist'),
     path('contact',views.contact,name='contact'),
     path('delete/<int:book_id>',views.delete,name='delete'),

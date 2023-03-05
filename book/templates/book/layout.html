@@ -5,27 +5,36 @@
     <head>
         <title>{% block title %} Library {% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
         <!--  Bootstrap icons-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     </head>
     <body>
     <nav class="navbar navbar-expand-sm navbar-light " style="background-color: #e3f2fd;">
-             
+        
             <a class="navbar-brand" href="#">Library</a>
-          
-              <ul class="navbar-nav mr-auto">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                 <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'index' %}">All Books</a>
+                  <a class="nav-link" aria-current="page" href="{% url 'index' %}">All Books</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Category</a>
-                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Category
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for category in categories %}
+                      <li><a class="dropdown-item" href="{% url 'category_books' category.id %}">{{category.title}}</a></li>
+                    {% endfor %}
+                    </ul>
+                  </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'wishlist' %}">Wishlist</a>
                 </li>
@@ -58,6 +67,8 @@
                 <input class="form-control me-2" name="search" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-primary" type="submit">Search</button>
               </form>
+            </div>
+            
     
     </nav>  
         
@@ -66,6 +77,31 @@
             {% endblock %}
         </div>
         <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
-    </body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+        <footer class="text-center text-dark mt-5" style="background-color:#e3f2fd">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-lg-4 ">
+                    <h5 class="text-lg-right ml-3"><a href="#" class="text-dark">Kian Library</a></h5>
+                </div>
+                <div class="col-lg-4 text-center py-4">
+                    © 2023 Copyright:
+                    <a class="text-dark" href="#">kianlibrary.com</a>
+                </div>
+
+                <div class="col-lg-4">
+                    <ul class="text-lg-left py-5 list-unstyled">
+                        <li class="pb-3"><i class="bi bi-geo-alt-fill"></i> <span class="ml-3">Yangon, Myanmar</span></li>
+                        <li class="pb-3"><i class="bi bi-facebook"></i> <a href="#" class="text-dark ml-3">www.facebook.com/kianlibrary</a></li>
+                        <li class="pb-3"><i class="bi bi-twitter"></i> <a href="#" class="text-dark ml-3">www.twitter.com/kianlibrary</a></li>
+                        <li><i class="bi bi-telephone-fill"></i> <span class="ml-3">+959434342323</span> </li>
+                        
+                    </ul>
+                </div>
+            
+            </div>
+            
+        </footer>
+
+</body>
 </html>

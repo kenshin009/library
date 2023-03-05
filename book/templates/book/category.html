@@ -1,0 +1,29 @@
+{% extends "book/layout.html" %}
+
+{% block title %} Category {% endblock %}
+
+{% block body %}
+<h4 class="display-4 text-center mt-5">Books by Category</h4><br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3 col-lg-4">
+            <ul class="nav flex-column">
+                {% for category in categories %}
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'category_books' category.id %}"> {{ category.title }} </a>
+                </li>
+                
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-9 col-lg-8">
+            {% for book in category_books %}
+
+            {% endfor %}
+        </div>
+    </div>
+</div>
+    
+
+{% endblock %}

@@ -3,6 +3,8 @@
 {% block title %} HireBook List {% endblock %}
 
 {% block body %}
+
+{% if hirebooks %}
     {% for book in hirebooks %}
     <div class="container">
         <h4 class="display-4 my-5 text-center">Hired Books</h4>
@@ -48,4 +50,8 @@
     </div>
        
     {% endfor %}
+{% else %}
+    <h3 class="mt-5 text-info">No Hired Book Yet</h3>
+{% endif %}
+
 {% endblock %}

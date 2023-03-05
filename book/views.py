@@ -19,12 +19,14 @@ def index (request):
     wishlists = WishList.objects.filter(username=request.user.username)
     # GEt all user's hirebooks
     hirebooks = HireBook.objects.filter(username=request.user.username)
+    # Get all categories
+    categories = Category.objects.all()
 
     return render(request,'book/index.html',{
         'books': books,
         'wishlists': wishlists,
         'hirebooks': hirebooks,
-        
+        'categories': categories
     })
 
 def pdf_view(request):
@@ -34,6 +36,7 @@ def pdf_view(request):
         return response
 
 def search(request):
+
     if request.method == 'POST':
         # Get the searched words
         q = request.POST['search']
@@ -43,10 +46,17 @@ def search(request):
         print(book_filter)
         wishlists = WishList.objects.filter(username=request.user.username)
 
+    # GEt all user's hirebooks
+    hirebooks = HireBook.objects.filter(username=request.user.username)
+    # Get all categories
+    categories = Category.objects.all()
+
     return render(request,'book/index.html',{
         'books': book_filter,
         'wishlists': wishlists,
-        'searched': True
+        'hirebooks': hirebooks,
+        'categories': categories,
+        'searched': True,    
     })
 
 def delete(request,book_id):
@@ -55,14 +65,17 @@ def delete(request,book_id):
     book.delete()
     return HttpResponseRedirect(reverse('index'))
 
+
 def hirebook(request,book_id):
     # Get the book
     book = Book.objects.get(id=book_id)
+    # Get all categories
+    categories = Category.objects.all()
     # Check whether the user has already hired the book or not
     hired = HireBook.objects.filter(username=request.user.username,book_id=book.id).first()
     # if the user has already hired
     if hired is not None:
-        print(hired)
+   
         # Show a message to contact librarian to delete hire
         message = 'Please contact your librarian to cancel'
          # Get all books
@@ -71,36 +84,58 @@ def hirebook(request,book_id):
         wishlists = WishList.objects.filter(username=request.user.username)
         # GEt all user's hirebooks
         hirebooks = HireBook.objects.filter(username=request.user.username)
+        
         # Redirect to home with context
         return render(request,'book/index.html',{
             'books': books,
             'wishlists': wishlists,
             'hirebooks': hirebooks,
-            'message': message
+            'message': message,
+            'categories': categories
         })
     # if not hired yet
     else:
-        print('fail')
         # Create new hired book
         hirebook = HireBook.objects.create(username=request.user.username,book_id=book.id,book_name=book.name,
                                                 book_image=book.image,return_date=date.today() + timedelta(days=14))
         hirebook.save()
-        return render(request,'book/hirebook_detail.html',{'hirebook':hirebook}) 
+        return render(request,'book/hirebook_detail.html',{
+            'hirebook':hirebook,
+            'categories': categories
+            }) 
     
-
 def hirebook_cancel(request,id):
-    # Get the hirebook and delete it
-    hirebook = HireBook.objects.get(id=id)
-    hirebook.delete()
+    if request.user.username == 'admin':
+        # if the user is admin
+        # Get the hirebook and delete it
+        hirebook = HireBook.objects.get(id=id)
+        hirebook.delete()
+    else:
+        # if user is not admin
+        message = 'You need to inform your librarian to cancel'
+        # Get all categories
+        categories = Category.objects.all()
+
+        return render(request,'book/hirebook_detail.html',{
+            'message': message,
+            'categories': categories
+        })
     return redirect('hirebook_list')
 
 def hirebook_list(request):
+    if request.user.username == 'admin':
+        # Get all hired books
+        hirebooks = HireBook.objects.all()
+        # Get all categories
+        categories = Category.objects.all()
+    else:
+        # Get user's hired books
+        hirebooks = HireBook.objects.filter(username=request.user.username)
+        # Get all categories
+        categories = Category.objects.all()
+        return render(request,'book/hirebook_list.html',{'hirebooks': hirebooks,'categories':categories})
     
-    hirebooks = HireBook.objects.filter(username=request.user.username)
-    print(hirebooks)
-    return render(request,'book/hirebook_list.html',{
-        'hirebooks': hirebooks
-    })
+    return render(request,'book/hirebook_list.html',{'hirebooks': hirebooks,'categories':categories})
 
 def hirebook_detail(request,book_id):
     # Get the hired book
@@ -108,8 +143,30 @@ def hirebook_detail(request,book_id):
         hirebook = HireBook.objects.get(id=book_id)
     except HireBook.DoesNotExist:
         raise Http404
-    return render(request,'book/hirebook_detail.html',{'hirebook':hirebook})
+    # Get all categories
+    categories = Category.objects.all()
 
+    return render(request,'book/hirebook_detail.html',{'hirebook':hirebook,'categories':categories})
+
+
+def category_books(request,cat_id):
+    # Get the specific category
+    category = Category.objects.get(id=cat_id)
+    # Get all books with the same category
+    category_books = Book.objects.filter(category=category)
+    # Get all categories
+    categories = Category.objects.all()
+    # Get all user's wishlists
+    wishlists = WishList.objects.filter(username=request.user.username)
+    # GEt all user's hirebooks
+    hirebooks = HireBook.objects.filter(username=request.user.username)
+
+    return render(request,'book/index.html',{
+        'categories': categories,
+        'books': category_books,
+        'wishlists': wishlists,
+        'hirebooks': hirebooks
+    })
 
 @csrf_exempt
 def wishlist(request):
@@ -124,9 +181,12 @@ def wishlist(request):
                 all_wishlist.append(book)
         else:
             pass
+        # Get all categories
+        categories = Category.objects.all()
 
         return render(request,'book/wishlist.html',{
-            'wishlists': all_wishlist
+            'wishlists': all_wishlist,
+            'categories': categories
         })
     
     elif request.method == 'POST':
@@ -159,7 +219,10 @@ def wishlist(request):
         return JsonResponse({"Error":"POST or GET request method required"},status=404)
 
 def contact (request):
-    return render(request,'book/contact.html')
+    # Get all categories
+    categories = Category.objects.all()
+
+    return render(request,'book/contact.html',{'categories':categories})
 
 @login_required(login_url='login')
 def add_book(request):
@@ -180,7 +243,11 @@ def add_book(request):
         new_book = Book.objects.create(name=name,author=author,category=category_obj,image=image,buy_date=buy_date)
         new_book.save()
         return redirect('index')
-    return render(request,'book/add_book.html')
+    
+    # Get all categories
+    categories = Category.objects.all()
+
+    return render(request,'book/add_book.html',{'categories':categories})
 
 def login_view(request):
     if request.method == "POST":

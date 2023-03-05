@@ -4,11 +4,11 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="display-4 mb-5 text-center">Hired Book Detail</h3>
-        <hr>
+        <h3 class="display-4 my-5 text-center">Hired Book Detail</h3>
+
         <div class="row">
-            <div class="col-lg-6">
-                <img src="{{ hirebook.book_image.url }}" class="my-5" alt="{{ hirebook.book_image }}" style="width: 420px; height: 460px;">
+            <div class="col-lg-6 text-center">
+                <img src="{{ hirebook.book_image.url }}" class="my-5" alt="{{ hirebook.book_image }}" style="height: 400px; object-fit:fill;">
             </div>
 
            <div class="col-lg-6 border-left text-left pt-5">
@@ -23,11 +23,15 @@
             <div class="mb-5"><strong>Hire Date:</strong><span class=" lead pl-3"> {{ hirebook.hire_date }} </span></div>
 
             <div class="mb-5"><strong>Return Date:</strong><span class=" lead pl-3"> {{ hirebook.return_date }} </span></div>
+
+            <div class="mb-5">
+                <a href="{% url 'hirebook_cancel' hirebook.id %}" class="btn btn-danger">Cancel Hire</a>
+            </div>
              
         </div>
         </div>
-        {% if user.username == 'admin' %}
-        <a href="{% url 'hirebook_cancel' hirebook.id %}" class="btn btn-outline-danger btn-sm">Cancel</a>
-        {% endif %} 
+       
+        
+
     </div>
 {% endblock %}
