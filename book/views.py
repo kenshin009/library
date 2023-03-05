@@ -105,10 +105,10 @@ def hirebook(request,book_id):
             }) 
     
 def hirebook_cancel(request,id):
+    # Get the hirebook
+    hirebook = HireBook.objects.get(id=id)
     if request.user.username == 'admin':
-        # if the user is admin
-        # Get the hirebook and delete it
-        hirebook = HireBook.objects.get(id=id)
+        # if the user is admin, delete it   
         hirebook.delete()
     else:
         # if user is not admin
@@ -117,6 +117,7 @@ def hirebook_cancel(request,id):
         categories = Category.objects.all()
 
         return render(request,'book/hirebook_detail.html',{
+            'hirebook': hirebook,
             'message': message,
             'categories': categories
         })

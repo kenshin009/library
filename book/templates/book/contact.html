@@ -4,16 +4,22 @@
 
 {% block body %}
     <div class="container">
-            <h4 class="display-4 my-5 text-center">Contact Us</h4>
-            <div class="row mt-5">
+            <h4 class="display-4 mt-4 text-center">Contact Us</h4>
+            <div class="row mt-3">
                 <div class="col-4 mx-auto p-5 bg-dark text-white border border-secondary rounded">
-                <div class="row mt-4">
-                    <div class="col-md-4">Address</div>
-                    <div class="col-md-4">Phone</div>
-                    <div class="col-md-4">Email</div>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <a href="#phone" class="text-info"><i class="bi bi-telephone-fill"> </i><br>Mobile</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="http://m.me/kianlibrary" class="text-info"><i class="bi bi-messenger"></i><br>Messenger</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="https://signal.me/#p/+95997364882" class="text-info"><i class="bi bi-signal"></i><br>Signal</a>
+                    </div>
                 </div>
-                <h4 class="text-center my-5">Message to Librarian</h4>
-                <form class="text-center mb-3" action="">
+                <h4 class="text-center my-5">Email to Librarian</h4>
+                <form class="text-center" action="">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="username" placeholder="Username">
                     </div>
@@ -22,11 +28,14 @@
                         
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="message" placeholder="Message">
+                        <input type="text" class="form-control" id="subject" placeholder="Subject">
                         
                     </div>
+                    <div class="form-floating mb-3">
+                        <textarea name="message" class="form-control" placeholder="Message"></textarea>
+                    </div>
                     
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <button type="submit" class="btn btn-info my-2">Send Message</button>
                 </form>
                 </div>
             </div>

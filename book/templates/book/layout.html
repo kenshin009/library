@@ -42,12 +42,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'hirebook_list' %}">Hired Books</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact' %}">Contact Librarian</a>
-                    </li>
+                    
                     {% if user.username == 'admin' %} 
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'add_book' %}">Add Book</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
                     </li>
                     {%  endif %}
                     <li class="nav-item">
@@ -82,19 +84,27 @@
         <footer class="text-center text-dark mt-5" style="background-color:#e3f2fd">
             <div class="row justify-content-between align-items-center">
                 <div class="col-lg-4 ">
-                    <h5 class="text-lg-right ml-3"><a href="#" class="text-dark">Kian Library</a></h5>
+                    <h5 class="text-lg-right ml-3"><a href="#" class="text-info">Kian Library</a></h5>
                 </div>
                 <div class="col-lg-4 text-center py-4">
                     © 2023 Copyright:
-                    <a class="text-dark" href="#">kianlibrary.com</a>
+                    <a class="text-dark" href="#">kianlibrary@gmail.com</a>
                 </div>
 
                 <div class="col-lg-4">
                     <ul class="text-lg-left py-5 list-unstyled">
-                        <li class="pb-3"><i class="bi bi-geo-alt-fill"></i> <span class="ml-3">Yangon, Myanmar</span></li>
-                        <li class="pb-3"><i class="bi bi-facebook"></i> <a href="#" class="text-dark ml-3">www.facebook.com/kianlibrary</a></li>
-                        <li class="pb-3"><i class="bi bi-twitter"></i> <a href="#" class="text-dark ml-3">www.twitter.com/kianlibrary</a></li>
-                        <li><i class="bi bi-telephone-fill"></i> <span class="ml-3">+959434342323</span> </li>
+                        <li id="address" class="pb-3">
+                            <i class="bi bi-geo-alt-fill"></i> <span class="ml-3">Yangon, Myanmar</span>
+                        </li>
+                        <li class="pb-3"> 
+                            <a href="https://www.facebook.com/kianlibrary" class="text-dark"><i class="bi bi-facebook"></i><span class="ml-4">Facebook</span></a>
+                        </li>
+                        <li class="pb-3"> 
+                            <a href="https://www.twitter.com/kianlibrary" class="text-dark"><i class="bi bi-twitter"></i><span class="ml-4">Twitter</span></a>
+                        </li>
+                        <li id="phone">
+                            <i class="bi bi-telephone-fill"></i> <span class="ml-3">+959434342323</span> 
+                        </li>
                         
                     </ul>
                 </div>

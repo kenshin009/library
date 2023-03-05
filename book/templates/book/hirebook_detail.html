@@ -5,7 +5,13 @@
 {% block body %}
     <div class="container">
         <h3 class="display-4 my-5 text-center">Hired Book Detail</h3>
-
+        {% if message %}
+        <div class="text-center mb-2">
+            <span class="text-danger ">{{message}}</span>
+            <a href="{% url 'contact' %}" class="text-info">Contact Here</a>
+        </div> 
+        {% endif %}
+        </div>
         <div class="row">
             <div class="col-lg-6 text-center">
                 <img src="{{ hirebook.book_image.url }}" class="my-5" alt="{{ hirebook.book_image }}" style="height: 400px; object-fit:fill;">
@@ -26,7 +32,7 @@
 
             <div class="mb-5">
                 <a href="{% url 'hirebook_cancel' hirebook.id %}" class="btn btn-danger">Cancel Hire</a>
-            </div>
+                
              
         </div>
         </div>
