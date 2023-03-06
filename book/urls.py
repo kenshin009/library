@@ -12,9 +12,10 @@ urlpatterns = [
     path('hirebook-cancel/<int:id>',views.hirebook_cancel,name='hirebook_cancel'),
 
     path('category-books/<int:cat_id>',views.category_books,name='category_books'),
-
     path('wishlist',views.wishlist,name='wishlist'),
+
     path('contact',views.contact,name='contact'),
+    path('send-email',views.send_email,name='send_email'),
     path('delete/<int:book_id>',views.delete,name='delete'),
     path('add-book',views.add_book,name='add_book'),
     

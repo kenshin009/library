@@ -3,10 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse,Http404
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 from datetime import datetime,date,timedelta
 from django.db import IntegrityError
 from django.urls import reverse
 from django.db.models import Q
+from django.conf import settings
 import json
 from .models import *
 # Create your views here.
@@ -29,12 +31,14 @@ def index (request):
         'categories': categories
     })
 
+@login_required(login_url='login')
 def pdf_view(request):
     with open('media/files/goblet.pdf', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=mypdf.pdf'
         return response
 
+@login_required(login_url='login')
 def search(request):
 
     if request.method == 'POST':
@@ -59,6 +63,7 @@ def search(request):
         'searched': True,    
     })
 
+@login_required(login_url='login')
 def delete(request,book_id):
     # Get the book and delete it
     book = Book.objects.get(id=book_id)
@@ -66,6 +71,7 @@ def delete(request,book_id):
     return HttpResponseRedirect(reverse('index'))
 
 
+@login_required(login_url='login')
 def hirebook(request,book_id):
     # Get the book
     book = Book.objects.get(id=book_id)
@@ -103,7 +109,8 @@ def hirebook(request,book_id):
             'hirebook':hirebook,
             'categories': categories
             }) 
-    
+
+@login_required(login_url='login')
 def hirebook_cancel(request,id):
     # Get the hirebook
     hirebook = HireBook.objects.get(id=id)
@@ -123,6 +130,7 @@ def hirebook_cancel(request,id):
         })
     return redirect('hirebook_list')
 
+@login_required(login_url='login')
 def hirebook_list(request):
     if request.user.username == 'admin':
         # Get all hired books
@@ -138,6 +146,7 @@ def hirebook_list(request):
     
     return render(request,'book/hirebook_list.html',{'hirebooks': hirebooks,'categories':categories})
 
+@login_required(login_url='login')
 def hirebook_detail(request,book_id):
     # Get the hired book
     try:
@@ -150,6 +159,7 @@ def hirebook_detail(request,book_id):
     return render(request,'book/hirebook_detail.html',{'hirebook':hirebook,'categories':categories})
 
 
+@login_required(login_url='login')
 def category_books(request,cat_id):
     # Get the specific category
     category = Category.objects.get(id=cat_id)
@@ -169,6 +179,7 @@ def category_books(request,cat_id):
         'hirebooks': hirebooks
     })
 
+@login_required(login_url='login')
 @csrf_exempt
 def wishlist(request):
 
@@ -219,11 +230,41 @@ def wishlist(request):
     else:
         return JsonResponse({"Error":"POST or GET request method required"},status=404)
 
+@login_required(login_url='login')
 def contact (request):
     # Get all categories
     categories = Category.objects.all()
 
     return render(request,'book/contact.html',{'categories':categories})
+
+def send_email(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email_from = request.POST['email']
+        subject = request.POST['subject']
+        message = request.POST['message']
+
+        # Format the message
+        message = '''
+        From: {}
+
+        Username: {}
+
+        Subject: {}
+
+        New message: {}
+        '''.format(email_from,username,subject,message)
+
+        recipient_list = [settings.EMAIL_HOST_USER,]
+        send_mail( subject, message,'', recipient_list )
+
+     # Get all categories
+    categories = Category.objects.all()
+
+    return render(request,'book/contact.html',{
+        'message':'Email was sent successfully',
+        'categories': categories
+        })
 
 @login_required(login_url='login')
 def add_book(request):

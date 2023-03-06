@@ -9,35 +9,64 @@
                 <div class="col-4 mx-auto p-5 bg-dark text-white border border-secondary rounded">
                 <div class="row text-center">
                     <div class="col-md-4">
-                        <a href="#phone" class="text-info"><i class="bi bi-telephone-fill"> </i><br>Mobile</a>
+                        <a href="#address" class="text-info"><i class="bi bi-geo-alt-fill"> </i><br>Address</a>
                     </div>
                     <div class="col-md-4">
-                        <a href="http://m.me/kianlibrary" class="text-info"><i class="bi bi-messenger"></i><br>Messenger</a>
+                        <a href="#phone" class="text-info"><i class="bi bi-telephone-fill"></i><br>Mobile</a>
                     </div>
                     <div class="col-md-4">
                         <a href="https://signal.me/#p/+95997364882" class="text-info"><i class="bi bi-signal"></i><br>Signal</a>
                     </div>
                 </div>
                 <h4 class="text-center my-5">Email to Librarian</h4>
-                <form class="text-center" action="">
+                {% if message %}
+                    <p class="text-success text-center"> {{ message }} </p>
+                {% endif %}
+                <form class="text-center" action="{% url 'send_email' %}" method="POST">
+                    {% csrf_token %}
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="username" placeholder="Username">
+                        <input onkeyup="check_input()" type="text" class="form-control" id="username" name="username" placeholder="Username">
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email" placeholder="Email">
+                        <input onkeyup="check_input()" type="email" class="form-control" id="email" name="email" placeholder="Email">
                         
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="subject" placeholder="Subject">
+                        <input onkeyup="check_input()" type="text" class="form-control" id="subject" name="subject" placeholder="Subject">
                         
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea name="message" class="form-control" placeholder="Message"></textarea>
+                        <textarea onkeyup="check_input()" name="message" id="message" class="form-control" placeholder="Message"></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-info my-2">Send Message</button>
+                    <button type="submit" id="submit" class="btn btn-info my-2" disabled>Send Message</button>
                 </form>
                 </div>
             </div>
     </div>
+    <!-- Prevent empty submit -->
+    <script>
+        function check_input() {
+             // Get all inputs' values
+        const username = document.querySelector('#username').value;
+        const email = document.querySelector('#email').value;
+        const subject = document.querySelector('#subject').value;
+        const message = document.querySelector('#message').value;
+
+        // if one of the inputs is empty, disable submit button
+        if (username.trim() == '' ||
+            email.trim() == '' ||
+            subject.trim() == '' ||
+            message.trim() == ''
+        ) {
+            // Disable the submit button
+            document.querySelector('#submit').disabled = true;
+        } else {
+            // can submit
+            document.querySelector('#submit').disabled = false;
+
+        }
+        }
+       
+    </script>
 {% endblock %}
