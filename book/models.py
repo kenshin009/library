@@ -17,11 +17,16 @@ class Category(models.Model):
     
 class Book(models.Model):
 
+    isbn = models.IntegerField(default=0)
     name = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     category = models.ForeignKey(Category,on_delete=models.CASCADE,default='')
     image = models.ImageField(upload_to='book_images')
-    buy_date = models.DateTimeField(default=datetime.now)
+    book_file = models.FileField(upload_to='files',default='files/default.pdf')
+    # slug = models.SlugField(default=slugify(book_file))
+    publisher = models.CharField(max_length=200,default='')
+    publication_date = models.DateTimeField(default=datetime.now,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -32,7 +37,7 @@ class HireBook(models.Model):
     book_id = models.IntegerField(default=0)
     book_name = models.CharField(max_length=200,default='')
     book_image = models.ImageField(default='')
-    hire_date = models.DateTimeField(auto_now_add=True)
+    hire_date = models.DateTimeField(auto_now_add=True, blank=True)
     return_date = models.DateTimeField()
 
     def __str__(self):

@@ -8,6 +8,10 @@
     <form action="{% url 'add_book' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="mb-3">
+      <label for="isbn" class="form-label">ISBN</label>
+      <input type="number" class="form-control" id="isbn" name="isbn">
+    </div>
+    <div class="mb-3">
       <label for="name" class="form-label">Book Name</label>
       <input type="text" class="form-control" id="name" name="name">
     </div>
@@ -24,8 +28,16 @@
         <input type="file" class="form-control" id="image" name="image">
     </div>
     <div class="mb-3">
-        <label for="buy_date" class="form-label">Date of Buy</label>
-        <input type="date" class="form-control" id="buy_date" name="buy_date">
+      <label for="book_file" class="form-label">Book File</label>
+      <input type="file" class="form-control" id="book_file" name="book_file">
+    </div>
+    <div class="mb-3">
+      <label for="publisher" class="form-label">Publisher Name</label>
+      <input type="text" class="form-control" id="publisher" name="publisher">
+    </div>
+    <div class="mb-3">
+        <label for="pub_date" class="form-label">Publication Date</label>
+        <input type="date" class="form-control" id="pub_date" name="pub_date">
     </div>
     <button type="submit" class="btn btn-primary">Add</button>
   </form>

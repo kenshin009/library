@@ -9,60 +9,20 @@
             <div class="row">
                 {% for book in books %}
                 <div class="col-12 col-lg-3">
-                    <div class="card" style="width: 18rem;">
+                    <a href="{% url 'book_detail' book.id %}">
+                        <div class="card" style="width: 18rem;">
                         <img src="{{ book.image.url }}" class="card-img-top mt-4" alt="{{ book.image }}" style="height: 200px; object-fit:contain;">
                         <div class="card-body mt-4">
                             <h5 class="card-title text-center">{{ book.name}}</h5>
                             <p class="card-text text-muted text-center"> {{ book.author }} </p>
-                            <input type="hidden" id="book_id{{ book.id }}" value="{{book.id}}">
-                            <div class="buttons text-center">
-                                <a id="wishlist{{ book.id }}" href="#" class="btn btn-outline-danger btn-sm">
-                                    {% if wishlists %}
-                                    {% for wishlist in wishlists %}
-                                            {% if book.id == wishlist.book_id %}
-                                                <i id="heart{{book.id}}" class="bi bi-heart-fill"></i> 
-                                            {% else %}
-                                                <span class=""></span>
-                                            {% endif %}
-                                    {% endfor %}
-                                    {% else %}
-                                        <i id="heart{{book.id}}" class="bi bi-heart"></i> 
-                                    {% endif %}
-                                </a>
-                                <a href="{% url 'hirebook' book.id %}" class="btn btn-outline-primary btn-sm">
-                                    {% if hirebooks %}
-                                    {% for hirebook in hirebooks %}
-                                        {% if book.id == hirebook.book_id %}
-                                            Cancel Hire 
-                                        {% else %}
-                                            Hire
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% else %}
-                                        Hire
-                                    {% endif %}
-                                </a>
-                                <a href="{% url 'pdf_view' %}"
-                                 class="btn btn-outline-info btn-sm">Read</a>
-                                {% if user.username == 'admin' %}
-                                <a href="{% url 'delete' book.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-                                {% endif %}
-                            </div>
-                        {% if message %}
-                            <div class="my-4 text-center">
-                                 <small class="text-danger ">{{message}}</small>
-                            </div>
-                           
-                            <div class="text-center">
-                                <a href="{% url 'contact' %}" class="btn btn-info btn-sm">Contact Here</a>
-                            </div>
-                            
-                        {% endif %}
+
                         </div>
                      
                     </div>
+                    </a>
+                  
                 </div>
-                <!-- Add to Wishlist JS freature -->
+                <!-- Add to Wishlist JS freature
                 <script>
                     document.querySelector('#wishlist{{book.id}}').addEventListener('click',() => {
 
@@ -86,7 +46,7 @@
                         })
                         .catch(err => console.log(err))
                     })
-                </script>
+                </script> -->
                 {% endfor %}
             </div>
             

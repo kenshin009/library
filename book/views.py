@@ -9,6 +9,7 @@ from django.db import IntegrityError
 from django.urls import reverse
 from django.db.models import Q
 from django.conf import settings
+from django.utils.text import slugify
 import json
 from .models import *
 # Create your views here.
@@ -31,9 +32,29 @@ def index (request):
         'categories': categories
     })
 
+def book_detail(request,book_id):
+    # Get the book
+    book = Book.objects.get(id=book_id)
+    # Check if the book is in user's whislist
+    wishlist = WishList.objects.filter(username=request.user.username,book_id=book_id).first()
+    # Check if the user has hired this book
+    hired = HireBook.objects.filter(username=request.user.username,book_id=book_id).first()
+    # Get all categories
+    categories = Category.objects.all()
+
+    return render(request,'book/book_detail.html',{
+        'book':book,
+        'wishlist': wishlist,
+        'hired': hired,
+        'categories': categories
+    })
+
 @login_required(login_url='login')
-def pdf_view(request):
-    with open('media/files/goblet.pdf', 'rb') as pdf:
+def pdf_view(request,book_id):
+    # Get the book
+    book = Book.objects.get(id=book_id)
+    # Open the file
+    with open(f'media/{book.book_file.name}', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=mypdf.pdf'
         return response
@@ -84,20 +105,18 @@ def hirebook(request,book_id):
    
         # Show a message to contact librarian to delete hire
         message = 'Please contact your librarian to cancel'
-         # Get all books
-        books = Book.objects.all()
-        # Get all user's wishlists
-        wishlists = WishList.objects.filter(username=request.user.username)
-        # GEt all user's hirebooks
-        hirebooks = HireBook.objects.filter(username=request.user.username)
         
-        # Redirect to home with context
-        return render(request,'book/index.html',{
-            'books': books,
-            'wishlists': wishlists,
-            'hirebooks': hirebooks,
-            'message': message,
-            'categories': categories
+        # Check if the book is in user's whislist
+        wishlist = WishList.objects.filter(username=request.user.username,book_id=book_id).first()
+        # Check if the user has hired this book
+        hired = HireBook.objects.filter(username=request.user.username,book_id=book_id).first()
+
+        return render(request,'book/book_detail.html',{
+            'book':book,
+            'wishlist': wishlist,
+            'hired': hired,
+            'categories': categories,
+            'message': message
         })
     # if not hired yet
     else:
@@ -270,19 +289,24 @@ def send_email(request):
 def add_book(request):
 
     if request.method == "POST":
+        isbn = request.POST['isbn']
         name = request.POST['name']
         author = request.POST['author']
         category = request.POST['category']
         image = request.FILES.get('image')
-        buy_date = request.POST['buy_date']
-
+        book_file = request.FILES.get('book_file')
+        publisher = request.POST['publisher']
+        pub_date = request.POST['pub_date']
+        print(book_file)
         # Check category is already present or not
         try:
             category_obj = Category.objects.get(title=category.upper())
         except:
             category_obj = Category.objects.create(title=category.upper())
         # Create new book
-        new_book = Book.objects.create(name=name,author=author,category=category_obj,image=image,buy_date=buy_date)
+        new_book = Book.objects.create(isbn=isbn,name=name,author=author,category=category_obj,
+                                       book_file=book_file,image=image,
+                                       publisher=publisher,publication_date=pub_date)
         new_book.save()
         return redirect('index')
     
@@ -290,6 +314,7 @@ def add_book(request):
     categories = Category.objects.all()
 
     return render(request,'book/add_book.html',{'categories':categories})
+
 
 def login_view(request):
     if request.method == "POST":

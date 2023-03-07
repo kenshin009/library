@@ -6,4 +6,4 @@ admin.site.register(User)
 admin.site.register(Book)
 admin.site.register(HireBook)
 admin.site.register(WishList)
-
+admin.site.register(Category)

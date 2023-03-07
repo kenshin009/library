@@ -1,0 +1,87 @@
+{% extends "book/layout.html" %}
+
+{% block title %} Book Detail {% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h3 class="display-4 my-5 text-center">Book Detail</h3>
+    {% if message %}
+    <div class="text-center mb-2">
+        <span class="text-danger ">{{message}}</span>
+        <a href="{% url 'contact' %}" class="text-info">Contact Here</a>
+    </div> 
+    {% endif %}
+    <div class="row">
+        <div class="col-lg-6 text-center">
+            <img src="{{ book.image.url }}" class="my-5" alt="{{ book.image }}" style="height: 400px; object-fit:fill;">
+            <input type="hidden" id="book_id{{ book.id }}" value="{{book.id}}">
+        </div>
+
+        <div class="col-lg-6 border-left text-left pt-5">
+            
+            <div class="mb-5"><strong>ISBN:</strong><span class=" lead pl-3"> {{ book.isbn }} </span></div>
+             
+            <div class="mb-5"><strong>Book Name:</strong><span class=" lead pl-3"> {{ book.name }} </span></div>
+             
+            <div class="mb-5"><strong>Author:</strong><span class=" lead pl-3"> {{ book.author}} </span></div>
+
+            <div class="mb-5"><strong>Category:</strong><span class=" lead pl-3"> {{ book.category.title }} </span></div>
+
+            <div class="mb-5"><strong>Publisher:</strong><span class=" lead pl-3"> {{ book.publisher }} </span></div>
+
+            <div class="mb-5"><strong>Publication Date:</strong><span class=" lead pl-3"> {{ book.publication_date }} </span></div>
+
+            <div class="buttons">
+                <a id="wishlist{{book.id}}" href="#" class="btn btn-outline-danger btn-sm">
+                    {% if wishlist %}
+                        <i id="heart{{book.id}}" class="bi bi-heart-fill"></i> 
+                    {% else %}
+                        <i id="heart{{book.id}}" class="bi bi-heart"></i> 
+                    {% endif %}
+                </a>
+                <a href="{% url 'hirebook' book.id %}" class="btn btn-outline-primary btn-sm">
+                    {% if hired %}
+                        Cancel Hire 
+                    {% else %}
+                        Hire
+                    {% endif %}
+                </a>
+                <a href="{% url 'pdf_view' book.id %}"
+                    class="btn btn-outline-info btn-sm">Read</a>
+                {% if user.username == 'admin' %}
+                <a href="{% url 'delete' book.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                {% endif %}
+            </div>
+             
+        
+        </div>
+       <!-- Add to Wishlist JS freature -->
+       <script>
+        document.querySelector('#wishlist{{book.id}}').addEventListener('click',() => {
+
+            // Get the book id
+            const book_id = document.querySelector('#book_id{{ book.id }}').value;
+            // Fetch api with post request
+            fetch('/wishlist',{
+                method: 'POST',
+                body: JSON.stringify({'book_id':book_id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data['wishlist_already'] == true) {
+                    // Change heart icon
+                    document.querySelector('i').className = 'bi bi-heart';
+                } else {
+                    // Change heart icon to fill 
+                    document.querySelector('i').className = 'bi bi-heart-fill';
+                }
+            })
+            .catch(err => console.log(err))
+        })
+    </script>
+    </div>
+</div>
+ 
+{% endblock %}
