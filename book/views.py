@@ -9,7 +9,7 @@ from django.db import IntegrityError
 from django.urls import reverse
 from django.db.models import Q
 from django.conf import settings
-from django.utils.text import slugify
+from django.core.paginator import Paginator
 import json
 from .models import *
 # Create your views here.
@@ -18,17 +18,15 @@ from .models import *
 def index (request):
     # Get all books
     books = Book.objects.all()
-    # Get all user's wishlists
-    wishlists = WishList.objects.filter(username=request.user.username)
-    # GEt all user's hirebooks
-    hirebooks = HireBook.objects.filter(username=request.user.username)
+    # Add pagination 
+    paginator = Paginator(books,20) # 20 books per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     # Get all categories
     categories = Category.objects.all()
 
     return render(request,'book/index.html',{
-        'books': books,
-        'wishlists': wishlists,
-        'hirebooks': hirebooks,
+        'page_obj': page_obj,
         'categories': categories
     })
 
@@ -210,13 +208,17 @@ def wishlist(request):
             for wishlist in wishlists:
                 book = Book.objects.get(id=wishlist.book_id)
                 all_wishlist.append(book)
+            # Add pagination 
+            paginator = Paginator(all_wishlist,20) # 20 books per page
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
         else:
             pass
         # Get all categories
         categories = Category.objects.all()
 
         return render(request,'book/wishlist.html',{
-            'wishlists': all_wishlist,
+            'page_obj': page_obj,
             'categories': categories
         })
     

@@ -4,10 +4,11 @@
 
 {% block body %}
 
-{% if hirebooks %}
-    {% for book in hirebooks %}
+
     <div class="container">
         <h4 class="display-4 my-5 text-center">Hired Books</h4>
+        <hr>
+    {% if hirebooks %}
         <table class="table table-bordered">
             <caption>List of Hired Books</caption>
             <thead>
@@ -24,6 +25,7 @@
             </thead>
             <tbody>
             
+            {% for book in hirebooks %}
                 <tr>
                     <th class="align-middle text-center" scope="row"> {{ book.id }} </th>
                     <td class="align-middle text-center">
@@ -43,15 +45,15 @@
                         <a class="badge badge-primary" href="{% url 'hirebook_detail' book.id %}">View Details</a>
                     </td>
                 </tr>
-              
+            {% endfor %}
             </tbody>
           </table>
        
     </div>
        
-    {% endfor %}
-{% else %}
-    <h3 class="mt-5 text-info">No Hired Book Yet</h3>
-{% endif %}
+    
+    {% else %}
+        <h3 class="mt-5 text-info">No Hired Book Yet</h3>
+    {% endif %}
 
 {% endblock %}

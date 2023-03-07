@@ -4,27 +4,19 @@
 
 {% block body %}
 <h4 class="display-4 text-center mt-5">Wishlist</h4><br>
-<hr>
+<hr> 
         <div class="container">
             <div class="row">
-                {% if wishlists %}
-                {% for book in wishlists %}
-                <div class="col-12 col-lg-3">
+                {% if page_obj %}
+                {% for book in page_obj %}
+                <div class="col-12 col-lg-3 mr-4">
                     <a href="{% url 'book_detail' book.id %}">
-                        <div class="card" style="width: 18rem;">
+                        <div class="card h-100" style="width: 18rem;">
                         <img src="{{ book.image.url }}" class="card-img-top mt-4" alt="{{ book.image }}" style="height: 200px; object-fit:contain;">
                         <div class="card-body mt-4">
                             <h5 class="card-title text-center">{{ book.name}}</h5>
                             <p class="card-text text-muted text-center"> {{ book.author }} </p>
 
-                            <!-- <div class="buttons text-center">
-                                <a href="#" class="btn btn-outline-danger btn-sm"><i class="bi bi-heart-fill"></i></a>
-                                <a href="#" class="btn btn-outline-primary btn-sm">Hire</a>
-                                <a href="#" class="btn btn-outline-info btn-sm">View</a>
-                                
-                                <a href="#" class="btn btn-outline-danger btn-sm">Delete</a>
-                            </div>
-                           -->
                         </div>
                     </div>
                     </a>
@@ -35,6 +27,37 @@
                     <h3 class="mt-5 text-info">No Wishlist Yet</h3>
                 {% endif %}
             </div>
+            <!-- Add pagination feature -->
+            <nav class="text-right mt-4" aria-label="wishlist pages">  
+                        
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                
+                <ul class="pagination justify-content-center">
+
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">  
+                        <a href="?page=1" class="page-link">&laquo; first</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.previous_page_number }}" class="page-link">previous</a>
+                    </li>
+                        
+                    {% endif %}
+    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.next_page_number }}" class="page-link">next</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">last &raquo;</a>
+                    </li>
+                        
+                    {% endif %}
+                
+                </ul> 
+            </nav>
         </div>
     
 {% endblock %}

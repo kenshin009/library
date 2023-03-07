@@ -6,50 +6,58 @@
 <h4 class="display-4 text-center my-5"> {% if searched %} Searched Books {% else %} All Books  {% endif %}</h4><br>
     
         <div class="container mb-5">
-            <div class="row">
-                {% for book in books %}
-                <div class="col-12 col-lg-3">
-                    <a href="{% url 'book_detail' book.id %}">
-                        <div class="card" style="width: 18rem;">
-                        <img src="{{ book.image.url }}" class="card-img-top mt-4" alt="{{ book.image }}" style="height: 200px; object-fit:contain;">
-                        <div class="card-body mt-4">
-                            <h5 class="card-title text-center">{{ book.name}}</h5>
-                            <p class="card-text text-muted text-center"> {{ book.author }} </p>
+            <div class="row">  
+                {% if page_obj %}
+                    {% for book in page_obj %}
+                    <div class="col-12 col-lg-3 mr-4 ">      
+                        <a href="{% url 'book_detail' book.id %}">
+                            <div class="card h-100" style="width: 18rem;">
+                            <img src="{{ book.image.url }}" class="card-img-top mt-4" alt="{{ book.image }}" style="height: 200px; object-fit:contain;">
+                            <div class="card-body mt-4">
+                                <h5 class="card-title text-center">{{ book.name}}</h5>
+                                <p class="card-text text-muted text-center"> {{ book.author }} </p>
 
+                            </div>
+                        
                         </div>
-                     
+                        </a>
+                   
                     </div>
-                    </a>
-                  
-                </div>
-                <!-- Add to Wishlist JS freature
-                <script>
-                    document.querySelector('#wishlist{{book.id}}').addEventListener('click',() => {
+                    {% endfor %}    
+                {% endif %} 
 
-                        // Get the book id
-                        const book_id = document.querySelector('#book_id{{ book.id }}').value;
-                        // Fetch api with post request
-                        fetch('/wishlist',{
-                            method: 'POST',
-                            body: JSON.stringify({'book_id':book_id})
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log(data)
-                            if (data['wishlist_already'] == true) {
-                                // Change heart icon
-                                document.querySelector('i').className = 'bi bi-heart';
-                            } else {
-                                // Change heart icon to fill 
-                                document.querySelector('i').className = 'bi bi-heart-fill';
-                            }
-                        })
-                        .catch(err => console.log(err))
-                    })
-                </script> -->
-                {% endfor %}
             </div>
-            
+             <!-- Add pagination feature -->
+                <nav class="text-right mt-4" aria-label="book pages">  
+                        
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+                    
+                    <ul class="pagination justify-content-center">
+
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">  
+                            <a href="?page=1" class="page-link">&laquo; first</a>
+                        </li>
+                        <li class="page-item">
+                            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">previous</a>
+                        </li>
+                            
+                        {% endif %}
+        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a href="?page={{ page_obj.next_page_number }}" class="page-link">next</a>
+                        </li>
+                        <li class="page-item">
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">last &raquo;</a>
+                        </li>
+                            
+                        {% endif %}
+                    
+                    </ul> 
+                </nav>
         </div>
    
 
