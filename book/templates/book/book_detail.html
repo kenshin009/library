@@ -16,6 +16,7 @@
         <div class="col-lg-6 text-center">
             <img src="{{ book.image.url }}" class="my-5" alt="{{ book.image }}" style="height: 400px; object-fit:fill;">
             <input type="hidden" id="book_id{{ book.id }}" value="{{book.id}}">
+
         </div>
 
         <div class="col-lg-6 border-left text-left pt-5">
@@ -33,24 +34,38 @@
             <div class="mb-5"><strong>Publication Date:</strong><span class=" lead pl-3"> {{ book.publication_date }} </span></div>
 
             <div class="buttons">
-                <a id="wishlist{{book.id}}" href="#" class="btn btn-outline-danger btn-sm">
+                <a id="wishlist{{book.id}}" href="#" class="btn btn-outline-danger">
                     {% if wishlist %}
                         <i id="heart{{book.id}}" class="bi bi-heart-fill"></i> 
                     {% else %}
                         <i id="heart{{book.id}}" class="bi bi-heart"></i> 
                     {% endif %}
                 </a>
-                <a href="{% url 'hirebook' book.id %}" class="btn btn-outline-primary btn-sm">
-                    {% if hired %}
-                        Cancel Hire 
+                <a href="{% url 'pdf_view' book.id %}" class="btn btn-info">Read</a>
+                <!-- if the user has already hired this book, 
+                    we show them Cancel Hire button
+                -->
+                {% if user_hired %}
+                    <a href="{% url 'hirebook_cancel' user_hired.id %}" class="btn btn-warning">Cancel Hire </a>
+
+                <!-- if the user has not hired this book yet, -->
+                {% else %}
+                <!-- Check if this book is available for hire -->
+                    {% if other_hired %}
+                    <!-- if not available for hire, 
+                        I don't let anyone to hire again
+                        by disabling the hire button -->
+                    <button type="submit" class="btn btn-secondary" disabled>Hired </button>
                     {% else %}
-                        Hire
+                <!-- if available for hire, I let the user hire this book -->
+                    <a href="{% url 'hirebook' book.id %}" class="btn btn-primary">Hire </a>
+
                     {% endif %}
-                </a>
-                <a href="{% url 'pdf_view' book.id %}"
-                    class="btn btn-outline-info btn-sm">Read</a>
+                {% endif %}
+                
+                
                 {% if user.username == 'admin' %}
-                <a href="{% url 'delete' book.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                <a href="{% url 'delete' book.id %}" class="btn btn-danger">Delete</a>
                 {% endif %}
             </div>
              

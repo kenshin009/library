@@ -7,8 +7,8 @@
     
         <div class="container mb-5">
             <div class="row">  
-                {% if page_obj %}
-                    {% for book in page_obj %}
+                {% if books %}
+                    {% for book in books %}
                     <div class="col-12 col-lg-3 mr-4 ">      
                         <a href="{% url 'book_detail' book.id %}">
                             <div class="card h-100" style="width: 18rem;">
@@ -31,27 +31,27 @@
                 <nav class="text-right mt-4" aria-label="book pages">  
                         
                     <span class="current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                        Page {{ books.number }} of {{ books.paginator.num_pages }}.
                     </span>
                     
                     <ul class="pagination justify-content-center">
 
-                        {% if page_obj.has_previous %}
+                        {% if books.has_previous %}
                         <li class="page-item">  
                             <a href="?page=1" class="page-link">&laquo; first</a>
                         </li>
                         <li class="page-item">
-                            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">previous</a>
+                            <a href="?page={{ books.previous_page_number }}" class="page-link">previous</a>
                         </li>
                             
                         {% endif %}
         
-                        {% if page_obj.has_next %}
+                        {% if books.has_next %}
                         <li class="page-item">
-                            <a href="?page={{ page_obj.next_page_number }}" class="page-link">next</a>
+                            <a href="?page={{ books.next_page_number }}" class="page-link">next</a>
                         </li>
                         <li class="page-item">
-                            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">last &raquo;</a>
+                            <a href="?page={{ books.paginator.num_pages }}" class="page-link">last &raquo;</a>
                         </li>
                             
                         {% endif %}

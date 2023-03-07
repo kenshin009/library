@@ -26,7 +26,7 @@ def index (request):
     categories = Category.objects.all()
 
     return render(request,'book/index.html',{
-        'page_obj': page_obj,
+        'books': page_obj,
         'categories': categories
     })
 
@@ -36,14 +36,17 @@ def book_detail(request,book_id):
     # Check if the book is in user's whislist
     wishlist = WishList.objects.filter(username=request.user.username,book_id=book_id).first()
     # Check if the user has hired this book
-    hired = HireBook.objects.filter(username=request.user.username,book_id=book_id).first()
+    user_hired = HireBook.objects.filter(username=request.user.username,book_id=book_id).first()
+    # Check if other user has hired this book
+    other_hired = HireBook.objects.filter(book_id=book_id).first()
     # Get all categories
     categories = Category.objects.all()
-
+    print(other_hired)
     return render(request,'book/book_detail.html',{
         'book':book,
         'wishlist': wishlist,
-        'hired': hired,
+        'user_hired': user_hired,
+        'other_hired': other_hired,
         'categories': categories
     })
 
@@ -66,18 +69,16 @@ def search(request):
         # Filter the books 
         book_filter = Book.objects.filter(
                         Q(name__icontains=q) | Q(author__icontains=q))
-        print(book_filter)
-        wishlists = WishList.objects.filter(username=request.user.username)
+        # Add Pagination feature
+        paginator = Paginator(book_filter,20) # show 20 books per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
 
-    # GEt all user's hirebooks
-    hirebooks = HireBook.objects.filter(username=request.user.username)
     # Get all categories
     categories = Category.objects.all()
 
     return render(request,'book/index.html',{
-        'books': book_filter,
-        'wishlists': wishlists,
-        'hirebooks': hirebooks,
+        'books': page_obj,
         'categories': categories,
         'searched': True,    
     })
@@ -96,39 +97,19 @@ def hirebook(request,book_id):
     book = Book.objects.get(id=book_id)
     # Get all categories
     categories = Category.objects.all()
-    # Check whether the user has already hired the book or not
-    hired = HireBook.objects.filter(username=request.user.username,book_id=book.id).first()
-    # if the user has already hired
-    if hired is not None:
    
-        # Show a message to contact librarian to delete hire
-        message = 'Please contact your librarian to cancel'
-        
-        # Check if the book is in user's whislist
-        wishlist = WishList.objects.filter(username=request.user.username,book_id=book_id).first()
-        # Check if the user has hired this book
-        hired = HireBook.objects.filter(username=request.user.username,book_id=book_id).first()
-
-        return render(request,'book/book_detail.html',{
-            'book':book,
-            'wishlist': wishlist,
-            'hired': hired,
-            'categories': categories,
-            'message': message
-        })
-    # if not hired yet
-    else:
-        # Create new hired book
-        hirebook = HireBook.objects.create(username=request.user.username,book_id=book.id,book_name=book.name,
-                                                book_image=book.image,return_date=date.today() + timedelta(days=14))
-        hirebook.save()
-        return render(request,'book/hirebook_detail.html',{
-            'hirebook':hirebook,
-            'categories': categories
-            }) 
+    # Create new hired book
+    hirebook = HireBook.objects.create(username=request.user.username,book_id=book.id,book_name=book.name,
+                                            book_image=book.image,return_date=date.today() + timedelta(days=14))
+    hirebook.save()
+    return render(request,'book/hirebook_detail.html',{
+        'hirebook':hirebook,
+        'categories': categories
+        }) 
 
 @login_required(login_url='login')
 def hirebook_cancel(request,id):
+
     # Get the hirebook
     hirebook = HireBook.objects.get(id=id)
     if request.user.username == 'admin':
@@ -136,7 +117,7 @@ def hirebook_cancel(request,id):
         hirebook.delete()
     else:
         # if user is not admin
-        message = 'You need to inform your librarian to cancel'
+        message = 'Please contact your librarian to cancel'
         # Get all categories
         categories = Category.objects.all()
 
@@ -182,18 +163,16 @@ def category_books(request,cat_id):
     category = Category.objects.get(id=cat_id)
     # Get all books with the same category
     category_books = Book.objects.filter(category=category)
+    # Add Pagination feature
+    paginator = Paginator(category_books,20) # 20 books per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     # Get all categories
     categories = Category.objects.all()
-    # Get all user's wishlists
-    wishlists = WishList.objects.filter(username=request.user.username)
-    # GEt all user's hirebooks
-    hirebooks = HireBook.objects.filter(username=request.user.username)
 
     return render(request,'book/index.html',{
         'categories': categories,
-        'books': category_books,
-        'wishlists': wishlists,
-        'hirebooks': hirebooks
+        'books': page_obj
     })
 
 @login_required(login_url='login')
@@ -218,7 +197,7 @@ def wishlist(request):
         categories = Category.objects.all()
 
         return render(request,'book/wishlist.html',{
-            'page_obj': page_obj,
+            'books': page_obj,
             'categories': categories
         })
     
