@@ -14,6 +14,7 @@ import json
 from .models import *
 # Create your views here.
 
+# Book views
 @login_required(login_url='login')
 def index (request):
     # Get all books
@@ -30,27 +31,35 @@ def index (request):
         'categories': categories
     })
 
-def members(request):
-    # Make sure only admin has access to members list
-    if request.user.username == 'admin':
-        # Get all users except admin
-        members = User.objects.all().exclude(is_superuser=True)
-    else:
-        return HttpResponseForbidden()
+@login_required(login_url='login')
+def add_book(request):
+
+    if request.method == "POST":
+        isbn = request.POST['isbn']
+        name = request.POST['name']
+        author = request.POST['author']
+        category = request.POST['category']
+        image = request.FILES.get('image')
+        book_file = request.FILES.get('book_file')
+        publisher = request.POST['publisher']
+        pub_date = request.POST['pub_date']
+        print(book_file)
+        # Check category is already present or not
+        try:
+            category_obj = Category.objects.get(title=category.upper())
+        except:
+            category_obj = Category.objects.create(title=category.upper())
+        # Create new book
+        new_book = Book.objects.create(isbn=isbn,name=name,author=author,category=category_obj,
+                                       book_file=book_file,image=image,
+                                       publisher=publisher,publication_date=pub_date)
+        new_book.save()
+        return redirect('index')
     
     # Get all categories
     categories = Category.objects.all()
 
-    return render(request,'book/members.html',{
-        'members': members,
-        'categories': categories
-    })
-
-def delete_member(request,member_id):
-    # Get the member and delete it
-    member = User.objects.get(id=member_id)
-    member.delete()
-    return redirect('members')
+    return render(request,'book/add_book.html',{'categories':categories})
 
 def book_detail(request,book_id):
     # Get the book
@@ -106,22 +115,6 @@ def search(request):
         'search_words': q,  
     })
 
-# This feature is only for admin
-def search_hirebooks(request):
-    if request.method == "POST":
-        # Get the searched words
-        search = request.POST['search']
-        # Filter all hirebooks by username and book name
-        hirebooks = HireBook.objects.filter(Q(username__icontains=search) | 
-                                            Q(book_name__icontains=search))
-    # Get all categories
-    categories = Category.objects.all()   
-
-    return render(request,'book/hirebook_list.html',{
-        'hirebooks': hirebooks,
-        'categories': categories
-    })
-
 @login_required(login_url='login')
 def delete(request,book_id):
     # Get the book and delete it
@@ -130,6 +123,31 @@ def delete(request,book_id):
     return HttpResponseRedirect(reverse('index'))
 
 
+# Members views # Only for admin 
+def members(request):
+    # Make sure only admin has access to members list
+    if request.user.username == 'admin':
+        # Get all users except admin
+        members = User.objects.all().exclude(is_superuser=True)
+    else:
+        return HttpResponseForbidden()
+    
+    # Get all categories
+    categories = Category.objects.all()
+
+    return render(request,'book/members.html',{
+        'members': members,
+        'categories': categories
+    })
+
+def delete_member(request,member_id):
+    # Get the member and delete it
+    member = User.objects.get(id=member_id)
+    member.delete()
+    return redirect('members')
+
+
+# hirebook views
 @login_required(login_url='login')
 def hirebook(request,book_id):
     # Get the book
@@ -146,26 +164,21 @@ def hirebook(request,book_id):
         'categories': categories
         }) 
 
-@login_required(login_url='login')
-def hirebook_cancel(request,id):
+# This feature is only for admin
+def search_hirebooks(request):
+    if request.method == "POST":
+        # Get the searched words
+        search = request.POST['search']
+        # Filter all hirebooks by username and book name
+        hirebooks = HireBook.objects.filter(Q(username__icontains=search) | 
+                                            Q(book_name__icontains=search))
+    # Get all categories
+    categories = Category.objects.all()   
 
-    # Get the hirebook
-    hirebook = HireBook.objects.get(id=id)
-    if request.user.username == 'admin':
-        # if the user is admin, delete it   
-        hirebook.delete()
-    else:
-        # if user is not admin
-        message = 'Please contact your librarian to cancel'
-        # Get all categories
-        categories = Category.objects.all()
-
-        return render(request,'book/hirebook_detail.html',{
-            'hirebook': hirebook,
-            'message': message,
-            'categories': categories
-        })
-    return redirect('hirebook_list')
+    return render(request,'book/hirebook_list.html',{
+        'hirebooks': hirebooks,
+        'categories': categories
+    })
 
 @login_required(login_url='login')
 def hirebook_list(request):
@@ -195,7 +208,28 @@ def hirebook_detail(request,book_id):
 
     return render(request,'book/hirebook_detail.html',{'hirebook':hirebook,'categories':categories})
 
+@login_required(login_url='login')
+def hirebook_cancel(request,id):
 
+    # Get the hirebook
+    hirebook = HireBook.objects.get(id=id)
+    if request.user.username == 'admin':
+        # if the user is admin, delete it   
+        hirebook.delete()
+    else:
+        # if user is not admin
+        message = 'Please contact your librarian to cancel'
+        # Get all categories
+        categories = Category.objects.all()
+
+        return render(request,'book/hirebook_detail.html',{
+            'hirebook': hirebook,
+            'message': message,
+            'categories': categories
+        })
+    return redirect('hirebook_list')
+
+# Category and wishlist views
 @login_required(login_url='login')
 def category_books(request,cat_id):
     # Get the specific category
@@ -269,6 +303,7 @@ def wishlist(request):
     else:
         return JsonResponse({"Error":"POST or GET request method required"},status=404)
 
+# Contact views
 @login_required(login_url='login')
 def contact (request):
     # Get all categories
@@ -305,37 +340,8 @@ def send_email(request):
         'categories': categories
         })
 
-@login_required(login_url='login')
-def add_book(request):
 
-    if request.method == "POST":
-        isbn = request.POST['isbn']
-        name = request.POST['name']
-        author = request.POST['author']
-        category = request.POST['category']
-        image = request.FILES.get('image')
-        book_file = request.FILES.get('book_file')
-        publisher = request.POST['publisher']
-        pub_date = request.POST['pub_date']
-        print(book_file)
-        # Check category is already present or not
-        try:
-            category_obj = Category.objects.get(title=category.upper())
-        except:
-            category_obj = Category.objects.create(title=category.upper())
-        # Create new book
-        new_book = Book.objects.create(isbn=isbn,name=name,author=author,category=category_obj,
-                                       book_file=book_file,image=image,
-                                       publisher=publisher,publication_date=pub_date)
-        new_book.save()
-        return redirect('index')
-    
-    # Get all categories
-    categories = Category.objects.all()
-
-    return render(request,'book/add_book.html',{'categories':categories})
-
-
+# login,logout,register views
 def login_view(request):
     if request.method == "POST":
 
@@ -364,7 +370,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
 
 def register(request):
     if request.method == "POST":
