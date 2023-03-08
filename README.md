@@ -33,6 +33,6 @@ The main project also has media folder which consists of two folders, book_image
 ### How to run this app
 
 1. Download the zip file from [here](https://github.com/kenshin009/library/archive/refs/heads/main.zip) and unzip it.
-2. Then, in your terminal, cd into **library-main** directory.
-3. Run pip install -r requirements.txt in your terminal.
-4. Run python manage.py runserver.
+2. Then, in your terminal, cd into ***library-main*** directory.
+3. Run ***pip install -r requirements.txt*** in your terminal.
+4. Run ***python manage.py runserver*** in your terminal.
