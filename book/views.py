@@ -106,6 +106,22 @@ def search(request):
         'search_words': q,  
     })
 
+# This feature is only for admin
+def search_hirebooks(request):
+    if request.method == "POST":
+        # Get the searched words
+        search = request.POST['search']
+        # Filter all hirebooks by username and book name
+        hirebooks = HireBook.objects.filter(Q(username__icontains=search) | 
+                                            Q(book_name__icontains=search))
+    # Get all categories
+    categories = Category.objects.all()   
+
+    return render(request,'book/hirebook_list.html',{
+        'hirebooks': hirebooks,
+        'categories': categories
+    })
+
 @login_required(login_url='login')
 def delete(request,book_id):
     # Get the book and delete it

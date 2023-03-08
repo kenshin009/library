@@ -13,6 +13,7 @@ urlpatterns = [
     path('hirebook-list',views.hirebook_list,name='hirebook_list'),
     path('hirebook-detail/<int:book_id>',views.hirebook_detail,name='hirebook_detail'),
     path('hirebook-cancel/<int:id>',views.hirebook_cancel,name='hirebook_cancel'),
+    path('search-hirebooks',views.search_hirebooks,name='search_hirebooks'),
 
     path('category-books/<int:cat_id>',views.category_books,name='category_books'),
     path('wishlist',views.wishlist,name='wishlist'),

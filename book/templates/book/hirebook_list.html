@@ -7,6 +7,17 @@
 
     <div class="container">
         <h4 class="display-4 my-5 text-center">Hired Books</h4>
+        <!-- Only for admin  -->
+        {% if user.username == 'admin' %}
+        <div class="navbar bg-light justify-content-between">
+            <p class="text-muted">List of Hired Books</p>
+            <form action="{% url 'search_hirebooks' %}" method="post" class="form-inline">
+                {% csrf_token %}
+                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+       {% endif %}
         <hr>
     {% if hirebooks %}
         <table class="table table-bordered">
