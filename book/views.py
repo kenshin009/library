@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect,JsonResponse,HttpResponse,Http404
+from django.http import HttpResponseRedirect,JsonResponse,HttpResponse,Http404,HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from datetime import datetime,date,timedelta
@@ -29,6 +29,28 @@ def index (request):
         'books': page_obj,
         'categories': categories
     })
+
+def members(request):
+    # Make sure only admin has access to members list
+    if request.user.username == 'admin':
+        # Get all users except admin
+        members = User.objects.all().exclude(is_superuser=True)
+    else:
+        return HttpResponseForbidden()
+    
+    # Get all categories
+    categories = Category.objects.all()
+
+    return render(request,'book/members.html',{
+        'members': members,
+        'categories': categories
+    })
+
+def delete_member(request,member_id):
+    # Get the member and delete it
+    member = User.objects.get(id=member_id)
+    member.delete()
+    return redirect('members')
 
 def book_detail(request,book_id):
     # Get the book
@@ -80,7 +102,8 @@ def search(request):
     return render(request,'book/index.html',{
         'books': page_obj,
         'categories': categories,
-        'searched': True,    
+        'searched': True,  
+        'search_words': q,  
     })
 
 @login_required(login_url='login')

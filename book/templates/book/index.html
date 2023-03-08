@@ -3,7 +3,7 @@
 {% block title %} Home {% endblock %}
 
 {% block body %}
-<h4 class="display-4 text-center my-5"> {% if searched %} Searched Books {% else %} All Books  {% endif %}</h4><br>
+<h4 class="display-4 text-center my-5"> {% if searched %} Searched Books for {{ search_words }} {% else %} All Books  {% endif %}</h4><br>
     
         <div class="container mb-5">
             <div class="row">  

@@ -1,0 +1,42 @@
+{% extends "book/layout.html" %}
+{% load static %}
+{% block title %} Members {% endblock %}
+
+{% block body %}
+<div class="container">
+    <h4 class="display-4 my-5 text-center">All Members</h4>
+    <hr>
+{% if members %}
+    <table class="table table-bordered">
+        <caption>List of Members</caption>
+        <thead>
+          <tr>
+            <th scope="col">Member ID</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone No.</th>
+            <th scope="col">Address</th>
+
+          </tr>
+        </thead>
+        <tbody>
+        
+        {% for member in members %}
+            <tr>
+                <th class="align-middle text-center" scope="row"> {{ member.id }} </th>
+                <td class="align-middle text-center"> {{ member.username }} </td>
+                <td class="align-middle text-center"> {{ member.email }} </td>
+                <td class="align-middle text-center">{{ member.phone }}</td>
+                <td class="align-middle text-center">{{ member.address }}</td>
+                <td class="align-middle text-center">
+                    <a class="btn btn-danger btn-sm" href="{% url 'delete_member' member.id %}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+   
+</div>
+   
+    {% endif %}
+{% endblock %}

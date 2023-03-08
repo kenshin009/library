@@ -6,6 +6,8 @@ urlpatterns = [
     path('book-detail/<int:book_id>',views.book_detail,name='book_detail'),
     path('view-pdf/<int:book_id>', views.pdf_view,name='pdf_view'),
     path('search',views.search,name='search'),
+    path('members',views.members,name='members'),
+    path('delete-member/<int:member_id>',views.delete_member,name='delete_member'),
 
     path('hirebook/<int:book_id>',views.hirebook,name='hirebook'),
     path('hirebook-list',views.hirebook_list,name='hirebook_list'),
