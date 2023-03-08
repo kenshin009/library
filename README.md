@@ -1,7 +1,7 @@
 # library
 
-##README
-###Distinctiveness and Complexity
+## README
+### Distinctiveness and Complexity
 
 This library project is created for both librarian and library members.
 
