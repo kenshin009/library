@@ -13,7 +13,7 @@
             <p class="text-muted">List of Hired Books</p>
             <form action="{% url 'search_hirebooks' %}" method="post" class="form-inline">
                 {% csrf_token %}
-                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
+                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Username or Book Name" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
