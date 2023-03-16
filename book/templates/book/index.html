@@ -5,11 +5,11 @@
 {% block body %}
 <h4 class="display-4 text-center my-5"> {% if searched %} Searched Books for {{ search_words }} {% else %} All Books  {% endif %}</h4><br>
     
-        <div class="container mb-5">
+        <div class="container-fluid mb-5">
             <div class="row">  
                 {% if books %}
                     {% for book in books %}  
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mr-4 mb-5"> 
+                    <div class="col-12 col-sm-6 col-lg-3 mb-5"> 
                          
                         <a href="{% url 'book_detail' book.id %}">
                             <div class="card mx-auto h-100" style="width: 18rem;">

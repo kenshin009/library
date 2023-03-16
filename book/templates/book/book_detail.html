@@ -31,7 +31,7 @@
 
             <div class="mb-5"><strong>Publisher:</strong><span class=" lead pl-3"> {{ book.publisher }} </span></div>
 
-            <div class="mb-5"><strong>Publication Date:</strong><span class=" lead pl-3"> {{ book.publication_date }} </span></div>
+            <div class="mb-5"><strong>Publication Date:</strong><span class=" lead pl-3"> {{ book.publication_date|date:"Y-m-d" }} </span></div>
 
             <div class="buttons">
                 <a id="wishlist{{book.id}}" href="#" class="btn btn-outline-danger">

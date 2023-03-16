@@ -259,7 +259,10 @@ def wishlist(request):
         wishlists = WishList.objects.filter(username=request.user.username)
         if wishlists is not None:
             for wishlist in wishlists:
-                book = Book.objects.get(id=wishlist.book_id)
+                try:
+                    book = Book.objects.get(id=wishlist.book_id)
+                except Book.DoesNotExist:
+                    book = None
                 all_wishlist.append(book)
             # Add pagination 
             paginator = Paginator(all_wishlist,20) # 20 books per page
