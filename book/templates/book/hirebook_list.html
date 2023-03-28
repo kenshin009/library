@@ -13,7 +13,7 @@
             <p class="text-muted">List of Hired Books</p>
             <form action="{% url 'search_hirebooks' %}" method="post" class="form-inline">
                 {% csrf_token %}
-                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
+                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Username or Book Name" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
@@ -51,7 +51,7 @@
                     <td class="align-middle text-center">{{ book.book_id }}</td>
                     <td class="align-middle text-center">{{ book.book_name }}</td>
                     <td class="align-middle text-center">{{ book.hire_date }}</td>
-                    <td class="align-middle text-center">{{ book.return_date }}</td>
+                    <td class="align-middle text-center">{{ book.return_date|date:"Y-m-d" }}</td>
                     <td class="align-middle text-center">
                         <a class="badge badge-primary" href="{% url 'hirebook_detail' book.id %}">View Details</a>
                     </td>

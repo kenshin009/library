@@ -32,7 +32,7 @@ The main project also has media folder which consists of two folders, book_image
 
 ### How to run this app
 
-1. Download the zip file from [here](https://github.com/kenshin009/library/archive/refs/heads/main.zip) and unzip it.
-2. Then, in your terminal, cd into ***library-main*** directory.
+1. Download the zip file from [here](https://github.com/me50/kenshin009/archive/refs/heads/web50/projects/2020/x/capstone.zip) and unzip it.
+2. Then, in your terminal, cd into ***kenshin009-web50-projects-2020-x-capstone*** directory.
 3. Run ***pip install -r requirements.txt*** in your terminal.
 4. Run ***python manage.py runserver*** in your terminal.

@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password,check_password
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse,Http404,HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
@@ -258,7 +259,10 @@ def wishlist(request):
         wishlists = WishList.objects.filter(username=request.user.username)
         if wishlists is not None:
             for wishlist in wishlists:
-                book = Book.objects.get(id=wishlist.book_id)
+                try:
+                    book = Book.objects.get(id=wishlist.book_id)
+                except Book.DoesNotExist:
+                    book = None
                 all_wishlist.append(book)
             # Add pagination 
             paginator = Paginator(all_wishlist,20) # 20 books per page
@@ -348,17 +352,11 @@ def login_view(request):
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
-        # Check user is present or not
-        user_filter = User.objects.filter(username=username,password=password).first()
-        # Check if authentication successful
-        if user_filter is not None:
-            user = User.objects.get(username=username,password=password)
-            # user = authenticate(request, username=username,password=password,email=get_user.email,phone=get_user.phone,address=get_user.address)
-      
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request,user)
             return HttpResponseRedirect(reverse("index"))
-            # if user is not None:
-            #     login(request, user)
                 
         else:
             return render(request, "book/login.html", {
@@ -388,7 +386,7 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create(username=username, email=email, password=password, phone=phone, address=address)
+            user = User.objects.create(username=username, email=email, password=make_password(password), phone=phone, address=address)
             user.save()
 
         except IntegrityError:

@@ -5,13 +5,14 @@
 {% block body %}
 <h4 class="display-4 text-center my-5"> {% if searched %} Searched Books for {{ search_words }} {% else %} All Books  {% endif %}</h4><br>
     
-        <div class="container mb-5">
+        <div class="container-fluid mb-5">
             <div class="row">  
                 {% if books %}
-                    {% for book in books %}
-                    <div class="col-12 col-lg-3 mr-4 ">      
+                    {% for book in books %}  
+                    <div class="col-12 col-sm-6 col-lg-3 mb-5"> 
+                         
                         <a href="{% url 'book_detail' book.id %}">
-                            <div class="card h-100" style="width: 18rem;">
+                            <div class="card mx-auto h-100" style="width: 18rem;">
                             <img src="{{ book.image.url }}" class="card-img-top mt-4" alt="{{ book.image }}" style="height: 200px; object-fit:contain;">
                             <div class="card-body mt-4">
                                 <h5 class="card-title text-center">{{ book.name}}</h5>
@@ -21,9 +22,9 @@
                         
                         </div>
                         </a>
-                   
+                    
                     </div>
-                    {% endfor %}    
+                 {% endfor %}      
                 {% endif %} 
 
             </div>
