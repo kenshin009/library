@@ -30,9 +30,17 @@ The book/templates/book contains all the html files for this project.
 The main project also has media folder which consists of two folders, book_images and files. The former, book_images store images of book covers and the files folder store pdf files.
 
 
-### How to run this app
+### How to run this project
+To run this project on your local machine, follow these steps:
 
-1. Download the zip file from [here](https://github.com/me50/kenshin009/archive/refs/heads/web50/projects/2020/x/capstone.zip) and unzip it.
-2. Then, in your terminal, cd into ***kenshin009-web50-projects-2020-x-capstone*** directory.
-3. Run ***pip install -r requirements.txt*** in your terminal.
-4. Run ***python manage.py runserver*** in your terminal.
+#### Prerequisites
+Python 3 must be installed on your machine. You can download it from https://www.python.org/downloads/.
+
+pip (Python package manager) must also be installed on your machine. You can check if it's installed by running pip --version in your terminal. If it's not installed, you can install it using the instructions at https://pip.pypa.io/en/stable/installing/.
+
+#### Installation
+1. Clone the repository from GitHub by running the following command in your terminal:
+    `git clone https://github.com/kenshin009/library.git`
+2. Then, in your terminal, cd into **library** directory.
+3. Run `pip install -r requirements.txt` in your terminal.
+4. Run `python manage.py runserver` in your terminal.
