@@ -23,7 +23,6 @@ class Book(models.Model):
     category = models.ForeignKey(Category,on_delete=models.CASCADE,default='')
     image = models.ImageField(upload_to='book_images')
     book_file = models.FileField(upload_to='files',default='files/default.pdf')
-    # slug = models.SlugField(default=slugify(book_file))
     publisher = models.CharField(max_length=200,default='')
     publication_date = models.DateTimeField(default=datetime.now,blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
